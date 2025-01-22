@@ -1,5 +1,14 @@
 # File with telegram_api_key
 telegram_api_key.txt
 
+# File with binance_api_key
+binance_api_key.txt
+
+# File with binance_api_secret
+binance_api_secret.txt
+
 # Python cache
 __pycache__/
+
+# Python env
+.venv/
