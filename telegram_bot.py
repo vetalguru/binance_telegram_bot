@@ -1,19 +1,5 @@
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-
 from telegeram_api_key import TelegramAPIKey
-
-
-async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text('Help message')
-
-
-async def user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(f'{update.effective_user.first_name}')
-
-
-async def echo (update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    await update.message.reply_text(update.message.text)
+from telegram_bot_manager import TelegramBotManager
 
 
 def main():
@@ -26,12 +12,8 @@ def main():
         print("Error: telegeram_api_key.txt file not found")
         exit(1)
 
-    app = ApplicationBuilder().token(TELEGRAM_API_KEY).build()
-    app.add_handler(CommandHandler("help", help))
-    app.add_handler(CommandHandler("user", user))
-    app.add_handler(CommandHandler("stop", echo))
-
-    app.run_polling()
+    bot_manager = TelegramBotManager(TELEGRAM_API_KEY)
+    bot_manager.run()
 
 
 if __name__ == '__main__':
