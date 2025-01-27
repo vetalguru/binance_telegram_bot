@@ -21,6 +21,8 @@ class TelegramBotManager:
             "/price_btc - Get the current price of Bitcoin (BTC)\n"
             "/price_sol - Get the current price of Solana (SOL)\n"
             "/server_time - Get the current server time from Binance\n"
+            "/book_ticker_btc - Get the order book for Bitcoin (BTC)\n"
+            "/book_ticker_sol - Get the order book for Solana (SOL)\n"
         )
         await update.message.reply_text(help_message)
 
@@ -48,9 +50,28 @@ class TelegramBotManager:
         except Exception as e:
             await update.message.reply_text(f'Failed to get the server time: {e}')
 
+    async def get_book_ticker_btc(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'BTCUSDT'
+        try:
+            book_ticker = self.binance.get_book_ticker(symbol)
+            await update.message.reply_text(f'The order book for {symbol} is {book_ticker}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the order book for {symbol}: {e}')
+
+    async def get_book_ticker_sol(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'SOLUSDT'
+        try:
+            book_ticker = self.binance.get_book_ticker(symbol)
+            await update.message.reply_text(f'The order book for {symbol} is {book_ticker}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the order book for {symbol}: {e}')
+
     def run(self) -> None:
         self.app.add_handler(CommandHandler("help", self.help))
         self.app.add_handler(CommandHandler("price_btc", self.price_btc))
         self.app.add_handler(CommandHandler("price_sol", self.price_sol))
         self.app.add_handler(CommandHandler("server_time", self.server_time))
+        self.app.add_handler(CommandHandler("book_ticker_btc", self.get_book_ticker_btc))
+        self.app.add_handler(CommandHandler("book_ticker_sol", self.get_book_ticker_sol))
+
         self.app.run_polling()

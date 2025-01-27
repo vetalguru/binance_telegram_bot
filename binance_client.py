@@ -26,3 +26,7 @@ class BinanceClient:
 
     def get_server_time(self):
         return self._get('/api/v3/time')
+    
+    def get_book_ticker(self, symbol):
+        params = {"symbol": symbol}
+        return self._get('/api/v3/ticker/bookTicker', params=params)
