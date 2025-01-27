@@ -27,6 +27,8 @@ class TelegramBotManager:
             "/ticker_price_sol - Get the ticker price for Solana (SOL)\n"
             "/ticker_24hr_btc - Get the 24hr ticker for Bitcoin (BTC)\n"
             "/ticker_24hr_sol - Get the 24hr ticker for Solana (SOL)\n"
+            "/avg_price_btc - Get the average price for Bitcoin (BTC)\n"
+            "/avg_price_sol - Get the average price for Solana (SOL)\n"
         )
         await update.message.reply_text(help_message)
 
@@ -102,6 +104,22 @@ class TelegramBotManager:
         except Exception as e:
             await update.message.reply_text(f'Failed to get the 24hr ticker for {symbol}: {e}')
 
+    async def get_avg_price_btc(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'BTCUSDT'
+        try:
+            avg_price = self.binance.get_avg_price(symbol)
+            await update.message.reply_text(f'The average price for {symbol} is {avg_price}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the average price for {symbol}: {e}')
+
+    async def get_avg_price_sol(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'SOLUSDT'
+        try:
+            avg_price = self.binance.get_avg_price(symbol)
+            await update.message.reply_text(f'The average price for {symbol} is {avg_price}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the average price for {symbol}: {e}')
+
     def run(self) -> None:
         self.app.add_handler(CommandHandler("help", self.help))
         self.app.add_handler(CommandHandler("price_btc", self.price_btc))
@@ -113,5 +131,7 @@ class TelegramBotManager:
         self.app.add_handler(CommandHandler("ticker_price_sol", self.get_ticker_price_sol))
         self.app.add_handler(CommandHandler("ticker_24hr_btc", self.get_ticker_24hr_btc))
         self.app.add_handler(CommandHandler("ticker_24hr_sol", self.get_ticker_24hr_sol))
+        self.app.add_handler(CommandHandler("avg_price_btc", self.get_avg_price_btc))
+        self.app.add_handler(CommandHandler("avg_price_sol", self.get_avg_price_sol))
 
         self.app.run_polling()
