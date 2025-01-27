@@ -34,3 +34,7 @@ class BinanceClient:
     def get_ticker_price(self, symbol):
         params = {"symbol": symbol}
         return self._get('/api/v3/ticker/price', params=params)
+
+    def get_ticker_24hr(self, symbol):
+        params = {"symbol": symbol}
+        return self._get('/api/v3/ticker/24hr', params=params)

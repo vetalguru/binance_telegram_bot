@@ -25,6 +25,8 @@ class TelegramBotManager:
             "/book_ticker_sol - Get the order book for Solana (SOL)\n"
             "/ticker_price_btc - Get the ticker price for Bitcoin (BTC)\n"
             "/ticker_price_sol - Get the ticker price for Solana (SOL)\n"
+            "/ticker_24hr_btc - Get the 24hr ticker for Bitcoin (BTC)\n"
+            "/ticker_24hr_sol - Get the 24hr ticker for Solana (SOL)\n"
         )
         await update.message.reply_text(help_message)
 
@@ -84,6 +86,22 @@ class TelegramBotManager:
         except Exception as e:
             await update.message.reply_text(f'Failed to get the ticker price for {symbol}: {e}')
 
+    async def get_ticker_24hr_btc(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'BTCUSDT'
+        try:
+            ticker_24hr = self.binance.get_ticker_24hr(symbol)
+            await update.message.reply_text(f'The 24hr ticker for {symbol} is {ticker_24hr}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the 24hr ticker for {symbol}: {e}')
+
+    async def get_ticker_24hr_sol(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'SOLUSDT'
+        try:
+            ticker_24hr = self.binance.get_ticker_24hr(symbol)
+            await update.message.reply_text(f'The 24hr ticker for {symbol} is {ticker_24hr}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the 24hr ticker for {symbol}: {e}')
+
     def run(self) -> None:
         self.app.add_handler(CommandHandler("help", self.help))
         self.app.add_handler(CommandHandler("price_btc", self.price_btc))
@@ -93,5 +111,7 @@ class TelegramBotManager:
         self.app.add_handler(CommandHandler("book_ticker_sol", self.get_book_ticker_sol))
         self.app.add_handler(CommandHandler("ticker_price_btc", self.get_ticker_price_btc))
         self.app.add_handler(CommandHandler("ticker_price_sol", self.get_ticker_price_sol))
+        self.app.add_handler(CommandHandler("ticker_24hr_btc", self.get_ticker_24hr_btc))
+        self.app.add_handler(CommandHandler("ticker_24hr_sol", self.get_ticker_24hr_sol))
 
         self.app.run_polling()
