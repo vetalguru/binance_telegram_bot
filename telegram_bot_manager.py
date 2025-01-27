@@ -1,3 +1,4 @@
+from datetime import datetime
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
@@ -41,8 +42,9 @@ class TelegramBotManager:
 
     async def server_time(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         try:
-            server_time = self.binance.get_server_time()
-            await update.message.reply_text(f'The server time is {server_time}')
+            server_time = self.binance.get_server_time().get('serverTime') / 1000.0
+            date_time = datetime.fromtimestamp(server_time).strftime('%Y-%m-%d %H:%M:%S')
+            await update.message.reply_text(f'The server time is {date_time}')
         except Exception as e:
             await update.message.reply_text(f'Failed to get the server time: {e}')
 
@@ -51,5 +53,4 @@ class TelegramBotManager:
         self.app.add_handler(CommandHandler("price_btc", self.price_btc))
         self.app.add_handler(CommandHandler("price_sol", self.price_sol))
         self.app.add_handler(CommandHandler("server_time", self.server_time))
-
         self.app.run_polling()

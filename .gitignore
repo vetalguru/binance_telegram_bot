@@ -12,3 +12,6 @@ __pycache__/
 
 # Python env
 .venv/
+
+# VSCode config
+.vscode/
