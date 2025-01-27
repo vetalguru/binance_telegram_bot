@@ -23,6 +23,8 @@ class TelegramBotManager:
             "/server_time - Get the current server time from Binance\n"
             "/book_ticker_btc - Get the order book for Bitcoin (BTC)\n"
             "/book_ticker_sol - Get the order book for Solana (SOL)\n"
+            "/ticker_price_btc - Get the ticker price for Bitcoin (BTC)\n"
+            "/ticker_price_sol - Get the ticker price for Solana (SOL)\n"
         )
         await update.message.reply_text(help_message)
 
@@ -66,6 +68,22 @@ class TelegramBotManager:
         except Exception as e:
             await update.message.reply_text(f'Failed to get the order book for {symbol}: {e}')
 
+    async def get_ticker_price_btc(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'BTCUSDT'
+        try:
+            ticker_price = self.binance.get_ticker_price(symbol)
+            await update.message.reply_text(f'The ticker price for {symbol} is {ticker_price}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the ticker price for {symbol}: {e}')
+
+    async def get_ticker_price_sol(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'SOLUSDT'
+        try:
+            ticker_price = self.binance.get_ticker_price(symbol)
+            await update.message.reply_text(f'The ticker price for {symbol} is {ticker_price}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the ticker price for {symbol}: {e}')
+
     def run(self) -> None:
         self.app.add_handler(CommandHandler("help", self.help))
         self.app.add_handler(CommandHandler("price_btc", self.price_btc))
@@ -73,5 +91,7 @@ class TelegramBotManager:
         self.app.add_handler(CommandHandler("server_time", self.server_time))
         self.app.add_handler(CommandHandler("book_ticker_btc", self.get_book_ticker_btc))
         self.app.add_handler(CommandHandler("book_ticker_sol", self.get_book_ticker_sol))
+        self.app.add_handler(CommandHandler("ticker_price_btc", self.get_ticker_price_btc))
+        self.app.add_handler(CommandHandler("ticker_price_sol", self.get_ticker_price_sol))
 
         self.app.run_polling()

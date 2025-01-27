@@ -30,3 +30,7 @@ class BinanceClient:
     def get_book_ticker(self, symbol):
         params = {"symbol": symbol}
         return self._get('/api/v3/ticker/bookTicker', params=params)
+    
+    def get_ticker_price(self, symbol):
+        params = {"symbol": symbol}
+        return self._get('/api/v3/ticker/price', params=params)
