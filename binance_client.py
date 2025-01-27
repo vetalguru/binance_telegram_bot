@@ -23,3 +23,6 @@ class BinanceClient:
     def get_coin_price(self, symbol):
         params = {"symbol": symbol}
         return self._get('/api/v3/ticker/price', params = params)
+
+    def get_server_time(self):
+        return self._get('/api/v3/time')
