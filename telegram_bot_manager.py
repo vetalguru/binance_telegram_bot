@@ -33,6 +33,8 @@ class TelegramBotManager:
             "/recent_trades_sol - Get the recent trades for Solana (SOL)\n"
             "/historical_trades_btc - Get the historical trades for Bitcoin (BTC)\n"
             "/historical_trades_sol - Get the historical trades for Solana (SOL)\n"
+            "/aggregate_trades_btc - Get the aggregate trades for Bitcoin (BTC)\n"
+            "/aggregate_trades_sol - Get the aggregate trades for Solana (SOL)\n"
         )
         await update.message.reply_text(help_message)
 
@@ -156,6 +158,22 @@ class TelegramBotManager:
         except Exception as e:
             await update.message.reply_text(f'Failed to get the historical trades for {symbol}: {e}')
 
+    async def get_aggregate_trades_btc(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'BTCUSDT'
+        try:
+            aggregate_trades = self.binance.get_aggregate_trades(symbol)
+            await update.message.reply_text(f'The downloaded aggregate trades counter of items for {symbol} are {len(aggregate_trades)}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the aggregate trades for {symbol}: {e}')
+    
+    async def get_aggregate_trades_sol(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'SOLUSDT'
+        try:
+            aggregate_trades = self.binance.get_aggregate_trades(symbol)
+            await update.message.reply_text(f'The downloaded aggregate trades counter of items for {symbol} are {len(aggregate_trades)}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the aggregate trades for {symbol}: {e}')
+
     def run(self) -> None:
         self.app.add_handler(CommandHandler("help", self.help))
         self.app.add_handler(CommandHandler("price_btc", self.price_btc))
@@ -173,5 +191,7 @@ class TelegramBotManager:
         self.app.add_handler(CommandHandler("recent_trades_sol", self.get_recent_trades_sol))
         self.app.add_handler(CommandHandler("historical_trades_btc", self.get_historical_trades_btc))
         self.app.add_handler(CommandHandler("historical_trades_sol", self.get_historical_trades_sol))
+        self.app.add_handler(CommandHandler("aggregate_trades_btc", self.get_aggregate_trades_btc))
+        self.app.add_handler(CommandHandler("aggregate_trades_sol", self.get_aggregate_trades_sol))
 
         self.app.run_polling()
