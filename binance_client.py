@@ -46,3 +46,7 @@ class BinanceClient:
     def get_recent_trades(self, symbol, limit=500):
         params = {"symbol": symbol, "limit": limit}
         return self._get('/api/v3/trades', params=params)
+    
+    def get_historical_trades(self, symbol, limit=500):
+        params = {"symbol": symbol, "limit": limit}
+        return self._get('/api/v3/historicalTrades', params=params)
