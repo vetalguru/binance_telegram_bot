@@ -29,6 +29,8 @@ class TelegramBotManager:
             "/ticker_24hr_sol - Get the 24hr ticker for Solana (SOL)\n"
             "/avg_price_btc - Get the average price for Bitcoin (BTC)\n"
             "/avg_price_sol - Get the average price for Solana (SOL)\n"
+            "/recent_trades_btc - Get the recent trades for Bitcoin (BTC)\n"
+            "/recent_trades_sol - Get the recent trades for Solana (SOL)\n"
         )
         await update.message.reply_text(help_message)
 
@@ -120,6 +122,22 @@ class TelegramBotManager:
         except Exception as e:
             await update.message.reply_text(f'Failed to get the average price for {symbol}: {e}')
 
+    async def get_recent_trades_btc(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'BTCUSDT'
+        try:
+            recent_trades = self.binance.get_recent_trades(symbol)
+            await update.message.reply_text(f'The downloaded recent trades counter of items for {symbol} are {len(recent_trades)}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the recent trades for {symbol}: {e}')
+
+    async def get_recent_trades_sol(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'SOLUSDT'
+        try:
+            recent_trades = self.binance.get_recent_trades(symbol)
+            await update.message.reply_text(f'The downloaded recent trades counter of items for {symbol} are {len(recent_trades)}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the recent trades for {symbol}: {e}')
+
     def run(self) -> None:
         self.app.add_handler(CommandHandler("help", self.help))
         self.app.add_handler(CommandHandler("price_btc", self.price_btc))
@@ -133,5 +151,7 @@ class TelegramBotManager:
         self.app.add_handler(CommandHandler("ticker_24hr_sol", self.get_ticker_24hr_sol))
         self.app.add_handler(CommandHandler("avg_price_btc", self.get_avg_price_btc))
         self.app.add_handler(CommandHandler("avg_price_sol", self.get_avg_price_sol))
+        self.app.add_handler(CommandHandler("recent_trades_btc", self.get_recent_trades_btc))
+        self.app.add_handler(CommandHandler("recent_trades_sol", self.get_recent_trades_sol))
 
         self.app.run_polling()

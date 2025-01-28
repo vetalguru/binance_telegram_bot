@@ -42,3 +42,7 @@ class BinanceClient:
     def get_avg_price(self, symbol):
         params = {"symbol": symbol}
         return self._get('/api/v3/avgPrice', params=params)
+    
+    def get_recent_trades(self, symbol, limit=500):
+        params = {"symbol": symbol, "limit": limit}
+        return self._get('/api/v3/trades', params=params)
