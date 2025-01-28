@@ -54,3 +54,7 @@ class BinanceClient:
     def get_aggregate_trades(self, symbol, limit=500):
         params = {"symbol": symbol, "limit": limit}
         return self._get('/api/v3/aggTrades', params=params)
+
+    def get_klines(self, symbol, interval, limit=500):
+        params = {"symbol": symbol, "interval": interval, "limit": limit}
+        return self._get('/api/v3/klines', params=params)

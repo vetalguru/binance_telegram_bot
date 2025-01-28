@@ -35,6 +35,8 @@ class TelegramBotManager:
             "/historical_trades_sol - Get the historical trades for Solana (SOL)\n"
             "/aggregate_trades_btc - Get the aggregate trades for Bitcoin (BTC)\n"
             "/aggregate_trades_sol - Get the aggregate trades for Solana (SOL)\n"
+            "/klines_btc - Get the klines for Bitcoin (BTC)\n"
+            "/klines_sol - Get the klines for Solana (SOL)\n"
         )
         await update.message.reply_text(help_message)
 
@@ -174,6 +176,24 @@ class TelegramBotManager:
         except Exception as e:
             await update.message.reply_text(f'Failed to get the aggregate trades for {symbol}: {e}')
 
+    async def get_klines_btc(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'BTCUSDT'
+        interval = '1m'
+        try:
+            klines = self.binance.get_klines(symbol, interval)
+            await update.message.reply_text(f'The downloaded klines counter of items for {symbol} are {len(klines)}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the klines for {symbol}: {e}')
+
+    async def get_klines_sol(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'SOLUSDT'
+        interval = '1m'
+        try:
+            klines = self.binance.get_klines(symbol, interval)
+            await update.message.reply_text(f'The downloaded klines counter of items for {symbol} are {len(klines)}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the klines for {symbol}: {e}')
+
     def run(self) -> None:
         self.app.add_handler(CommandHandler("help", self.help))
         self.app.add_handler(CommandHandler("price_btc", self.price_btc))
@@ -193,5 +213,7 @@ class TelegramBotManager:
         self.app.add_handler(CommandHandler("historical_trades_sol", self.get_historical_trades_sol))
         self.app.add_handler(CommandHandler("aggregate_trades_btc", self.get_aggregate_trades_btc))
         self.app.add_handler(CommandHandler("aggregate_trades_sol", self.get_aggregate_trades_sol))
+        self.app.add_handler(CommandHandler("klines_btc", self.get_klines_btc))
+        self.app.add_handler(CommandHandler("klines_sol", self.get_klines_sol))
 
         self.app.run_polling()
