@@ -38,6 +38,8 @@ class TelegramBotManager:
             "/klines_btc - Get the klines for Bitcoin (BTC)\n"
             "/klines_sol - Get the klines for Solana (SOL)\n"
             "/exchange_info - Get the exchange info from Binance\n"
+            "/order_book_btc - Get the order book for Bitcoin (BTC)\n"
+            "/order_book_sol - Get the order book for Solana (SOL)\n"
         )
         await update.message.reply_text(help_message)
 
@@ -202,6 +204,24 @@ class TelegramBotManager:
         except Exception as e:
             await update.message.reply_text(f'Failed to get the exchange info: {e}')
 
+    async def get_order_book_btc(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'BTCUSDT'
+        try:
+            order_book = self.binance.get_order_book(symbol)
+            bids_price = order_book.get('bids')[0][0]
+            await update.message.reply_text(f'The order book for {symbol} is {bids_price}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the order book for {symbol}: {e}')
+
+    async def get_order_book_sol(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        symbol = 'SOLUSDT'
+        try:
+            order_book = self.binance.get_order_book(symbol)
+            bids_price = order_book.get('bids')[0][0]
+            await update.message.reply_text(f'The order book for {symbol} is {bids_price}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the order book for {symbol}: {e}')
+
     def run(self) -> None:
         self.app.add_handler(CommandHandler("help", self.help))
         self.app.add_handler(CommandHandler("price_btc", self.price_btc))
@@ -224,5 +244,7 @@ class TelegramBotManager:
         self.app.add_handler(CommandHandler("klines_btc", self.get_klines_btc))
         self.app.add_handler(CommandHandler("klines_sol", self.get_klines_sol))
         self.app.add_handler(CommandHandler("exchange_info", self.get_exchange_info))
+        self.app.add_handler(CommandHandler("order_book_btc", self.get_order_book_btc))
+        self.app.add_handler(CommandHandler("order_book_sol", self.get_order_book_sol))
 
         self.app.run_polling()

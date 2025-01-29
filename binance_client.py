@@ -61,3 +61,7 @@ class BinanceClient:
 
     def get_exchange_info(self):
         return self._get('/api/v3/exchangeInfo')
+
+    def get_order_book(self, symbol, limit=100):
+        params = {"symbol": symbol, "limit": limit}
+        return self._get('/api/v3/depth', params=params)
