@@ -37,6 +37,7 @@ class TelegramBotManager:
             "/aggregate_trades_sol - Get the aggregate trades for Solana (SOL)\n"
             "/klines_btc - Get the klines for Bitcoin (BTC)\n"
             "/klines_sol - Get the klines for Solana (SOL)\n"
+            "/exchange_info - Get the exchange info from Binance\n"
         )
         await update.message.reply_text(help_message)
 
@@ -194,6 +195,13 @@ class TelegramBotManager:
         except Exception as e:
             await update.message.reply_text(f'Failed to get the klines for {symbol}: {e}')
 
+    async def get_exchange_info(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        try:
+            exchange_info = self.binance.get_exchange_info()
+            await update.message.reply_text(f'The exchange data size is {len(exchange_info)}')
+        except Exception as e:
+            await update.message.reply_text(f'Failed to get the exchange info: {e}')
+
     def run(self) -> None:
         self.app.add_handler(CommandHandler("help", self.help))
         self.app.add_handler(CommandHandler("price_btc", self.price_btc))
@@ -215,5 +223,6 @@ class TelegramBotManager:
         self.app.add_handler(CommandHandler("aggregate_trades_sol", self.get_aggregate_trades_sol))
         self.app.add_handler(CommandHandler("klines_btc", self.get_klines_btc))
         self.app.add_handler(CommandHandler("klines_sol", self.get_klines_sol))
+        self.app.add_handler(CommandHandler("exchange_info", self.get_exchange_info))
 
         self.app.run_polling()

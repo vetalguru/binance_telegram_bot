@@ -58,3 +58,6 @@ class BinanceClient:
     def get_klines(self, symbol, interval, limit=500):
         params = {"symbol": symbol, "interval": interval, "limit": limit}
         return self._get('/api/v3/klines', params=params)
+
+    def get_exchange_info(self):
+        return self._get('/api/v3/exchangeInfo')
