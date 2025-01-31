@@ -1,35 +1,13 @@
 import requests
 
-class BinanceClient:
+class BinanceMarketDataRestClient:
     """
-    A client for interacting with the Binance API.
-    Attributes:
-        BASE_URL (str): The base URL for the Binance API.
-        api_key (str): The API key for authenticating with the Binance API.
-        api_secret (str): The API secret for authenticating with the Binance API.
+    A marked data client for interacting with the Binance API.
+    This client do not require any authentication (i.e. The API key
+    is not necessary) and serve only public market data.
     """
 
     BASE_URL = 'https://api.binance.com'
-
-    def __init__(self, api_key, api_secret) -> None:
-        """
-        Initializes the BinanceClient with the provided API key and secret.
-
-        Args:
-            api_key (str): The API key for accessing the Binance API.
-            api_secret (str): The API secret for accessing the Binance API.
-        """
-        self.api_key = api_key
-        self.api_secret = api_secret
-
-    def _get_headers(self) -> dict:
-        """
-        Generate the headers required for making authenticated requests to the Binance API.
-
-        Returns:
-            dict: A dictionary containing the API key header.
-        """
-        return {'X-MBX-APIKEY': self.api_key}
 
     def _get(self, endpoint, params=None) -> dict:
         """
@@ -48,14 +26,14 @@ class BinanceClient:
         """
         url = f"{self.BASE_URL}{endpoint}"
         try:
-            response = requests.get(url, headers=self._get_headers(), params=params)
+            response = requests.get(url, params=params)
             response.raise_for_status()  # Raise an HTTPError for bad responses
             return response.json()
         except requests.exceptions.RequestException as e:
             print(f"An error occurred: {e}")
             return None
 
-    def _post(self, endpoint, data=None) -> dict:
+    def _post(self, endpoint, params=None) -> dict:
         """
         Sends a POST request to the specified endpoint with the provided data.
 
@@ -69,7 +47,7 @@ class BinanceClient:
         """
         url = f"{self.BASE_URL}{endpoint}"
         try:
-            response = requests.post(url, headers=self._get_headers(), data=data)
+            response = requests.post(url, params=params)
             response.raise_for_status()  # Raise an HTTPError for bad responses
             return response.json()
         except requests.exceptions.RequestException as e:

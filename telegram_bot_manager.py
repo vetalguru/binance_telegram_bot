@@ -2,11 +2,11 @@ from datetime import datetime
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
-from binance_client import BinanceClient
+from binance_market_data_rest_client import BinanceMarketDataRestClient
 
 
 class TelegramBotManager:
-    def __init__(self, api_key: str, binance: BinanceClient) -> None:
+    def __init__(self, api_key: str, binance: BinanceMarketDataRestClient) -> None:
         try:
             self.app = ApplicationBuilder().token(api_key).build()
             self.binance = binance
