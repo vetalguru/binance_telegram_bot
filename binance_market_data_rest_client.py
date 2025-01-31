@@ -7,7 +7,7 @@ class BinanceMarketDataRestClient:
     is not necessary) and serve only public market data.
     """
 
-    BASE_URL = 'https://api.binance.com'
+    BASE_URL = 'https://data-api.binance.vision'
 
     def _get(self, endpoint, params=None) -> dict:
         """
