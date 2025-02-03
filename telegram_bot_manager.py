@@ -16,15 +16,9 @@ class TelegramBotManager:
 
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         keyboard = [
-            [InlineKeyboardButton("📖 Help", callback_data='help'), InlineKeyboardButton("🕒 Server time", callback_data='server_time')],
-            [InlineKeyboardButton(" ℹ️ Exchange info", callback_data='exchange_info')],
-            [InlineKeyboardButton("💰 Price of BTC", callback_data='price_btc'), InlineKeyboardButton("💰 Average price of BTC", callback_data='avg_price_btc')],
-            [InlineKeyboardButton("📈 Book ticker", callback_data='book_ticker_btc'), InlineKeyboardButton("📉 Ticker price", callback_data='ticker_price_btc')],
-            [InlineKeyboardButton("📊 24h Ticker", callback_data='ticker_24hr_btc')],
-            [InlineKeyboardButton("🛒 Recent trades", callback_data='recent_trades_btc'), InlineKeyboardButton("📜 Historical trades", callback_data='historical_trades_btc')],
-            [InlineKeyboardButton("📊 Aggregate trades", callback_data='aggregate_trades_btc')],
-            [InlineKeyboardButton("📈 Klines", callback_data='klines_btc')],
-            [InlineKeyboardButton("🏦 Order Book", callback_data='order_book_btc')]
+            [InlineKeyboardButton("📖 Help", callback_data='help')],
+            [InlineKeyboardButton("🕒 Server time", callback_data='server_time')],
+            [InlineKeyboardButton("📊 Market Data", callback_data='market_data_menu')]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -32,6 +26,21 @@ class TelegramBotManager:
             await update.message.reply_text('📌 *Please choose an option:*', reply_markup=reply_markup)
         elif update.callback_query:
             await update.callback_query.message.edit_text('📌 *Please choose an option:*', reply_markup=reply_markup)
+
+    async def market_data_menu(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+        keyboard = [
+            [InlineKeyboardButton("💰 Price of BTC", callback_data='price_btc'), InlineKeyboardButton("💰 Average price of BTC", callback_data='avg_price_btc')],
+            [InlineKeyboardButton("📈 Book ticker", callback_data='book_ticker_btc'), InlineKeyboardButton("📉 Ticker price", callback_data='ticker_price_btc')],
+            [InlineKeyboardButton("📊 24h Ticker", callback_data='ticker_24hr_btc')],
+            [InlineKeyboardButton("🛒 Recent trades", callback_data='recent_trades_btc'), InlineKeyboardButton("📜 Historical trades", callback_data='historical_trades_btc')],
+            [InlineKeyboardButton("📊 Aggregate trades", callback_data='aggregate_trades_btc')],
+            [InlineKeyboardButton("📈 Klines", callback_data='klines_btc')],
+            [InlineKeyboardButton("🏦 Order Book", callback_data='order_book_btc')],
+            [InlineKeyboardButton("🔙 Back to main menu", callback_data='main_menu')]
+        ]
+
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.callback_query.message.edit_text("📊 Market Data:", reply_markup=reply_markup)
 
     async def button(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         query = update.callback_query
@@ -64,6 +73,8 @@ class TelegramBotManager:
             await self.get_klines_btc(update, context)
         elif command == 'order_book_btc':
             await self.get_order_book_btc(update, context)
+        elif command == 'market_data_menu':
+            await self.market_data_menu(update, context)
         elif command == 'main_menu':
             await self.start(update, context)
     
@@ -85,7 +96,7 @@ class TelegramBotManager:
             "/order_book_btc - Get the order book for Bitcoin (BTC)\n"
         )
 
-        keyboard = [[InlineKeyboardButton("🔙 Back", callback_data='main_menu')]]
+        keyboard = [[InlineKeyboardButton("🔙 Back to main menu", callback_data='main_menu')]]
         reply_markup = InlineKeyboardMarkup(keyboard)
 
         if update.callback_query:
@@ -98,7 +109,7 @@ class TelegramBotManager:
             server_time = self.binance.get_server_time().get('serverTime') / 1000.0
             date_time = datetime.fromtimestamp(server_time).strftime('%Y-%m-%d %H:%M:%S')
 
-            keyboard = [[InlineKeyboardButton("🔙 Back", callback_data='main_menu')]]
+            keyboard = [[InlineKeyboardButton("🔙 Back to main menu", callback_data='main_menu')]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             if update.callback_query:
@@ -115,7 +126,7 @@ class TelegramBotManager:
             server_time = exchange_info.get('serverTime') / 1000.0
             date_time = datetime.fromtimestamp(server_time).strftime('%Y-%m-%d %H:%M:%S')
 
-            keyboard = [[InlineKeyboardButton("🔙 Back", callback_data='main_menu')]]
+            keyboard = [[InlineKeyboardButton("🔙 Back to Market data menu", callback_data='marked_data_menu')]]
             reply_markup = InlineKeyboardMarkup(keyboard)
 
             if update.callback_query:
